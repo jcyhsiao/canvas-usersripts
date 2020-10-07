@@ -9,6 +9,9 @@
 // @grant        none
 // ==/UserScript==
 
+// In Chrome-based browsers, access via the right click context menu. 
+// TODO: Execute when page finishes loading; one challenge is how to account for additional pages that are only loaded upon infinite scrolling. 
+
 (function() {
     'use strict';
     
