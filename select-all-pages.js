@@ -10,8 +10,9 @@
 // ==/UserScript==
 
 // In Chrome-based browsers, access via the right click context menu.
-// TODO: Add a button. One challenge is how to account for additional pages that are only loaded upon infinite scrolling.
-
+// NOTE: Before you trigger the script, first scroll down the page a couple of times to make sure all pages are loaded. 
+// TODO: Add a button.
+// TODO: Account for additional pages that are only loaded upon infinite scrolling.
 
 (function() {
     'use strict';
