@@ -11,6 +11,10 @@
 
 (function() {
     'use strict';
+    
+    // Select all checkboxes. For each checkbox, if it is not disabled (i.e. front page), set its checked property to true. 
+    // Then, set the delete button's disabled property to false.
+    
     const checkboxes = document.getElementsByClassName('select-page-checkbox');
     for (const checkbox of checkboxes) {
         if (checkbox.disabled === false) {
