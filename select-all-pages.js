@@ -2,7 +2,7 @@
 // @name         Select all pages
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
 // @version      2020.10.07-1
-// @description  One button to select all pages on the Pages index
+// @description  One button to select all pages on the Pages index page
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/pages
 // @run-at       context-menu
