@@ -9,10 +9,15 @@
 // @grant        none
 // ==/UserScript==
 
+// ==User Configuration==//
+// Whether or not to automatically trigger delete
+const trigger_delete = true;
+
 // In Chrome-based browsers, access via the right click context menu.
-// NOTE: Before you trigger the script, first scroll down the page a couple of times to make sure all pages are loaded. 
+// NOTE: Before you trigger the script, first scroll down the page a couple of times to make sure all pages are loaded.
 // TODO: Add a button.
 // TODO: Account for additional pages that are only loaded upon infinite scrolling.
+
 
 (function() {
     'use strict';
@@ -25,8 +30,10 @@
         }
     }
 
-    // Then, "click" the delete button.
-    const delete_button = document.querySelector('button.delete_pages');
-    delete_button.click();
+    // Then, "click" the delete button if trigger_delete is true.
+    if (trigger_delete === true) {
+        const delete_button = document.querySelector('button.delete_pages');
+        delete_button.click();
+    }
 
 })();
