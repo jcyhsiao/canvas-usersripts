@@ -10,9 +10,9 @@
 // ==/UserScript==
 
 // ==User Configuration==//
-const trigger_delete = false; // Whether or not to automatically trigger delete. DEFAULT: true
-const select_by_criteria = true; // Whether or not to select by criteria. DEFAULT: false
-const selection_criteria = 'zOLD'; // Selection criteria. DEFAULT: ''
+const trigger_delete = true; // Whether or not to automatically trigger delete. DEFAULT: true
+const select_by_criteria = false; // Whether or not to select by criteria. DEFAULT: false
+const selection_criteria = ''; // Selection criteria. DEFAULT: ''
 
 // In Chrome-based browsers, access via the right click context menu.
 // NOTE: Before you trigger the script, first scroll down the page a couple of times to make sure all pages are loaded.
