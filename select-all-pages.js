@@ -1,32 +1,27 @@
 // ==UserScript==
 // @name         Select all pages
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
-// @version      2020.10.08-1
+// @version      2020.10.08-2
 // @description  One button to select all pages on the Pages index page
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/pages
-// @run-at       context-menu
+// @run-at       document-idle
 // @grant        none
 // ==/UserScript==
 
-// ==User Configuration==//
-const trigger_delete = true; // Whether or not to automatically trigger delete. DEFAULT: true
-const select_by_criteria = false; // Whether or not to select by criteria. DEFAULT: false
-const selection_criteria = ''; // Selection criteria. DEFAULT: ''
-
-// In Chrome-based browsers, access via the right click context menu.
 // NOTE: Before you trigger the script, first scroll down the page a couple of times to make sure all pages are loaded.
-// TODO: Add a button.
 // TODO: Account for additional pages that are only loaded upon infinite scrolling.
 
+/* User Configuration */
+const trigger_delete = false; // Whether or not to automatically trigger delete. DEFAULT: true
+const select_by_criteria = true; // Whether or not to select by criteria. DEFAULT: false
+const selection_criteria = 'zOLD'; // Selection criteria. DEFAULT: ''
 
-(function() {
-    'use strict';
-
+// Select all page
+function select_all_pages() {
     // Select all checkboxes. For each checkbox, fire its click event if it's not already checked.
     const checkboxes = document.querySelectorAll('input[type=checkbox].select-page-checkbox');
     for (const checkbox of checkboxes) {
-        console.log(checkbox.getAttribute('aria-label'));
         if (checkbox.checked === false) {
             const checkbox_aria_label = checkbox.getAttribute('aria-label');
             // If we're not selecting by criteria; or, if we are selecting by criteria, and checkbox's aria-label includes the selection criteria
@@ -41,5 +36,24 @@ const selection_criteria = ''; // Selection criteria. DEFAULT: ''
         const delete_button = document.querySelector('button.delete_pages');
         delete_button.click();
     }
+}
 
+(function() {
+    'use strict';
+
+    // For now, we're adding the new button as the first item in #content, because header-bar-right refreshes after table load and the button will be lost
+    const div_content = document.querySelector('#content');
+
+    const button_select_all = document.createElement('button');
+    button_select_all.onclick = select_all_pages;
+    button_select_all.innerHTML = 'Select All Pages';
+    button_select_all.classList.add('btn');
+    button_select_all.setAttribute('type', 'button');
+    button_select_all.setAttribute('tab-index', '0');
+    button_select_all.setAttribute('id', 'selelct_all_btn');
+    button_select_all.style.float = 'right';
+    button_select_all.style.marginBottom = '0.5em';
+    console.log(button_select_all);
+
+    div_content.insertBefore(button_select_all, div_content.childNodes[1]);
 })();
