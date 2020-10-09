@@ -35,8 +35,8 @@ async function execute() {
                 let update_button = document.querySelector('.permissions-dialog-form button[type="submit"]');
                 unpublish_option.click();
                 update_button.click();
-                // Waiting 0.5 secs just in case
-                // await new Promise(resolve => setTimeout(resolve, 500));
+                // Waiting 0.25 secs just in case
+                await new Promise(resolve => setTimeout(resolve, 250));
             } else {
                 publish_icon.click();
             }
