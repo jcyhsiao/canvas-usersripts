@@ -17,15 +17,18 @@ const trigger_delete = false; // Whether or not to automatically trigger delete.
 const select_by_criteria = false; // Whether or not to select by criteria. DEFAULT: false
 const selection_criteria = ''; // Selection criteria. DEFAULT: ''
 
-// 'async' because the second step awaits the completion of the first step
-async function execute() {
-    show_all_pages().then(select_all_pages());
+// Using timeout for a hacky implementation for now
+function execute() {
+    show_all_pages()
+    setTimeout(function() {
+        select_all_pages();
+    }, 3500);
 }
 
 
 // Keep scrolling until no more results can be loaded
 // 'async' because this step needs to be completed before next step can start
-async function show_all_pages() {
+function show_all_pages() {
     // A hacky implementation for now
     function scroll(timeout) {
         setTimeout(function() {
