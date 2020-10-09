@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Select all pages
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
-// @version      2020.10.08-2
+// @version      2020.10.09-1
 // @description  One button to select all pages on the Pages index page
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/pages
@@ -13,11 +13,37 @@
 // TODO: Account for additional pages that are only loaded upon infinite scrolling.
 
 /* User Configuration */
-const trigger_delete = false; // Whether or not to automatically trigger delete. DEFAULT: true
-const select_by_criteria = true; // Whether or not to select by criteria. DEFAULT: false
-const selection_criteria = 'zOLD'; // Selection criteria. DEFAULT: ''
+const trigger_delete = false; // Whether or not to automatically trigger delete. DEFAULT: false
+const select_by_criteria = false; // Whether or not to select by criteria. DEFAULT: false
+const selection_criteria = ''; // Selection criteria. DEFAULT: ''
 
-// Select all page
+// 'async' because the second step awaits the completion of the first step
+async function execute() {
+    show_all_pages().then(select_all_pages());
+}
+
+
+// Keep scrolling until no more results can be loaded
+// 'async' because this step needs to be completed before next step can start
+async function show_all_pages() {
+    // A hacky implementation for now
+    function scroll(timeout) {
+        setTimeout(function() {
+            if (document.querySelector('.loading-more') !== null) {
+                document.querySelector('.loading-more').scrollIntoView();
+                console.log('scrolling...');
+            }
+        }, timeout * 500);
+    }
+
+    scroll(1);
+    scroll(2);
+    scroll(3);
+    scroll(4);
+    scroll(5);
+}
+
+// Select all pages
 function select_all_pages() {
     // Select all checkboxes. For each checkbox, fire its click event if it's not already checked.
     const checkboxes = document.querySelectorAll('input[type=checkbox].select-page-checkbox');
@@ -38,6 +64,7 @@ function select_all_pages() {
     }
 }
 
+
 (function() {
     'use strict';
 
@@ -45,7 +72,7 @@ function select_all_pages() {
     const div_content = document.querySelector('#content');
 
     const button_select_all = document.createElement('button');
-    button_select_all.onclick = select_all_pages;
+    button_select_all.onclick = execute;
     button_select_all.innerHTML = 'Select All Pages';
     button_select_all.classList.add('btn');
     button_select_all.setAttribute('type', 'button');
@@ -53,7 +80,6 @@ function select_all_pages() {
     button_select_all.setAttribute('id', 'selelct_all_btn');
     button_select_all.style.float = 'right';
     button_select_all.style.marginBottom = '0.5em';
-    console.log(button_select_all);
 
     div_content.insertBefore(button_select_all, div_content.childNodes[1]);
 })();
