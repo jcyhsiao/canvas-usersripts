@@ -2,7 +2,7 @@
 // @name         Delete all discussions
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
 // @version      2020.10.09-1
-// @description  One button to select all pages on the Pages index page
+// @description  One button to delete all discussions on the Discussions index page
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/discussion_topics
 // @run-at       document-idle
