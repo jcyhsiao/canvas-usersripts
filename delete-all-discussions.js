@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Delete all discussions
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
-// @version      2020.10.09-1
+// @version      2020.10.09-2
 // @description  One button to delete all discussions on the Discussions index page
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/discussion_topics
@@ -13,19 +13,24 @@
 function execute() {
     // Gather all discussion delete buttons
     const delete_buttons = document.querySelectorAll('.ic-discussion-content-container .discussions-index-manage-menu button');
-    for (let i = 0; i < delete_buttons.length; i++) {
-        console.log(`deleting button ${i + 1} of ${delete_buttons.length}`);
-        let button = delete_buttons[i];
-        // Click delete button to reveal management menu
-        button.click();
-        let menu_option_delete = document.querySelector('#delete-discussion-menu-option');
-        // Click delete button in management menu
-        menu_option_delete.click();
-        // Which brings up a confirmation dialog
-        let confirm_delete = document.querySelector('#confirm_delete_discussions');
-        // Click delete confirmation button to delete
-        confirm_delete.click();
+
+    // User confirmation
+    if (window.confirm("Do you really want to delete all discussion boards?")) {
+        for (let i = 0; i < delete_buttons.length; i++) {
+            console.log(`deleting button ${i + 1} of ${delete_buttons.length}`);
+            let button = delete_buttons[i];
+            // Click delete button to reveal management menu
+            button.click();
+            let menu_option_delete = document.querySelector('#delete-discussion-menu-option');
+            // Click delete button in management menu
+            menu_option_delete.click();
+            // Which brings up a confirmation dialog
+            let confirm_delete = document.querySelector('#confirm_delete_discussions');
+            // Click delete confirmation button to delete
+            confirm_delete.click();
+        }
     }
+
 
 }
 
