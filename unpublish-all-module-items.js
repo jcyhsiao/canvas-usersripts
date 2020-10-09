@@ -12,7 +12,7 @@
 // TODO: This does not currently handle files
 
 // Triggered by clicking button
-function execute() {
+async function execute() {
     // Getting the module number from the button
     const module_id_number = this.id.split('_').pop();
     // Select the module that the button is for
@@ -29,14 +29,14 @@ function execute() {
             if (class_list.contains('attachment')) {
                 publish_icon.click();
                 // Needed a time out for the form to load first
-                setTimeout(function() {
-                    let unpublish_option = document.querySelector('.permissions-dialog-form i.icon-unpublish');
-                    let update_button = document.querySelector('.permissions-dialog-form button[type="submit"]');
-                    /* TODO: For now, all we're doing is to open these dialogs for manual confirmation.
-                    unpublish_option.click();
-                    update_button.click();
-                    */
-                }, 500);
+                await new Promise(resolve => setTimeout(resolve, 500)); // 0.5 sec
+                let unpublish_option = document.querySelector('.permissions-dialog-form i.icon-unpublish');
+                console.log(unpublish_option);
+                let update_button = document.querySelector('.permissions-dialog-form button[type="submit"]');
+                unpublish_option.click();
+                update_button.click();
+                // Waiting 0.5 secs just in case
+                // await new Promise(resolve => setTimeout(resolve, 500));
             } else {
                 publish_icon.click();
             }
