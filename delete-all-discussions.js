@@ -11,14 +11,19 @@
 
 // Triggered by clicking button
 function execute() {
+    // Gather all discussion delete buttons
     const delete_buttons = document.querySelectorAll('.ic-discussion-content-container .discussions-index-manage-menu button');
     for (let i = 0; i < delete_buttons.length; i++) {
         console.log(`deleting button ${i + 1} of ${delete_buttons.length}`);
         let button = delete_buttons[i];
+        // Click delete button to reveal management menu
         button.click();
         let menu_option_delete = document.querySelector('#delete-discussion-menu-option');
+        // Click delete button in management menu
         menu_option_delete.click();
+        // Which brings up a confirmation dialog
         let confirm_delete = document.querySelector('#confirm_delete_discussions');
+        // Click delete confirmation button to delete
         confirm_delete.click();
     }
 
