@@ -40,7 +40,7 @@ function execute() {
     button_select_all.innerHTML = 'Delete All Discussions';
     button_select_all.classList.add('btn');
     button_select_all.setAttribute('type', 'button');
-    button_select_all.setAttribute('tab-index', '0');
+    button_select_all.setAttribute('tabIndex', '0');
     button_select_all.setAttribute('id', 'delete_all_btn');
     // button_select_all.style.float = 'right';
     button_select_all.style.margin = '1em';
