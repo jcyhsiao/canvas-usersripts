@@ -72,7 +72,7 @@ function select_all_pages() {
     'use strict';
 
     // For now, we're adding the new button as the first item in #content, because header-bar-right refreshes after table load and the button will be lost
-    const div_content = document.querySelector('#content');
+    const div_content = document.querySelector('#content-wrapper');
 
     const button_select_all = document.createElement('button');
     button_select_all.onclick = execute;
@@ -81,8 +81,8 @@ function select_all_pages() {
     button_select_all.setAttribute('type', 'button');
     button_select_all.setAttribute('tab-index', '0');
     button_select_all.setAttribute('id', 'select_all_btn');
-    button_select_all.style.float = 'right';
-    button_select_all.style.marginBottom = '0.5em';
+    // button_select_all.style.float = 'right';
+    button_select_all.style.margin = '0.5em 1em';
 
     div_content.insertBefore(button_select_all, div_content.childNodes[1]);
 })();
