@@ -79,7 +79,7 @@ function select_all_pages() {
     button_select_all.innerHTML = 'Select All Pages';
     button_select_all.classList.add('btn');
     button_select_all.setAttribute('type', 'button');
-    button_select_all.setAttribute('tab-index', '0');
+    button_select_all.setAttribute('tabIndex', '0');
     button_select_all.setAttribute('id', 'select_all_btn');
     // button_select_all.style.float = 'right';
     button_select_all.style.margin = '0.5em 1em';
