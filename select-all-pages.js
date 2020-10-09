@@ -23,8 +23,8 @@ function execute() {
     setTimeout(function() {
         select_all_pages();
     }, 3500);
-}
 
+}
 
 // Keep scrolling until no more results can be loaded
 // 'async' because this step needs to be completed before next step can start
@@ -80,7 +80,7 @@ function select_all_pages() {
     button_select_all.classList.add('btn');
     button_select_all.setAttribute('type', 'button');
     button_select_all.setAttribute('tab-index', '0');
-    button_select_all.setAttribute('id', 'selelct_all_btn');
+    button_select_all.setAttribute('id', 'select_all_btn');
     button_select_all.style.float = 'right';
     button_select_all.style.marginBottom = '0.5em';
 
