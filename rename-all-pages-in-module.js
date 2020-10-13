@@ -84,7 +84,6 @@ async function execute() {
                 default:
                     alert('Invalid task.');
                     task_selection_error = true;
-                    break;
             }
         } while (task_selection_error = true);
 
@@ -105,10 +104,7 @@ async function execute() {
         } else if (will_replace) {
             // TODO
             alert("This is not yet implemented");
-        } else {
-            alert("You did not input a rename type, or input was invalid.");
-            return;
-        }
+ 
     }
 
     // Getting the module number from the button
