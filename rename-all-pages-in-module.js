@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rename all pages in module
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
-// @version      2020.10.13-2
+// @version      2020.10.13-3
 // @description  One button to rename all pages in a given module
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/modules
@@ -9,13 +9,16 @@
 // @grant        none
 // ==/UserScript==
 
-// none, append, prepend, remove-prefix, remove-suffix, replace
-const debug_mode = 'remove-suffix';
+// TODO: document
+// TODO: test interaction
+
+// none, add-prefix, add-suffix, remove-prefix, remove-suffix, replace
+const debug_mode = 'none';
 
 // Triggered by clicking button
 async function execute() {
-    let will_append = false;
-    let will_prepend = false;
+    let will_add_prefix = false;
+    let will_add_suffix = false;
     let will_remove_prefix = false;
     let will_remove_suffix = false;
     let will_replace = false;
@@ -33,13 +36,13 @@ async function execute() {
 
     if (debug_mode.toLowerCase() !== 'none') {
         switch (debug_mode) {
-            case 'prepend':
-                will_prepend = true;
+            case 'add-prefix':
+                will_add_prefix = true;
                 string_addition = 'zOLD';
                 divider = '_';
                 break;
-            case 'append':
-                will_append = true;
+            case 'add-suffix':
+                will_add_suffix = true;
                 string_addition = 'zOLD';
                 divider = '_';
                 break;
@@ -49,7 +52,12 @@ async function execute() {
                 break;
             case 'remove-suffix':
                 will_remove_suffix = true;
+                rename_from = '_zTEST';
+                break;
+            case 'replace':
+                will_replace = true;
                 rename_from = '_zOLD';
+                rename_to = '_zTEST';
                 break;
             default:
                 // Do nothing
@@ -62,11 +70,11 @@ async function execute() {
             task_selection_error = false;
 
             switch (rename_type.toLowerCase()) {
-                case 'p':
-                    will_prepend = true;
+                case 'ap':
+                    will_add_prefix = true;
                     break;
-                case 'a':
-                    will_append = true;
+                case 'as':
+                    will_add_suffix = true;
                     break;
                 case 'rp':
                     will_remove_prefix = true;
@@ -85,14 +93,14 @@ async function execute() {
                     alert('Invalid task.');
                     task_selection_error = true;
             }
-        } while (task_selection_error = true);
+        } while (task_selection_error === true);
 
 
-        if (will_append || will_prepend) {
+        if (will_add_prefix || will_add_suffix) {
 
-            let task_type = will_append ? 'append' : 'prepend';
+            let addition_type = will_add_prefix ? 'prefix' : 'suffix';
 
-            string_addition = window.prompt(`What is the string you would like to ${task_type}?`);
+            string_addition = window.prompt(`What is the string you would like to add as ${addition_type}?`);
 
             divider = window.prompt('Provide a divider to separate your addition with the original page name (leave blank if none): ');
 
@@ -102,9 +110,9 @@ async function execute() {
             rename_from = window.prompt(`Input the ${task_type}, including any divider; case has to match: `);
 
         } else if (will_replace) {
-            // TODO
-            alert("This is not yet implemented");
- 
+            rename_from = window.prompt('Input the OLD string you would like to replace (case-sensitive): ');
+            rename_to = window.prompt('Input the NEW string you would like to replace the OLD string with: ');
+        }
     }
 
     // Getting the module number from the button
@@ -116,7 +124,7 @@ async function execute() {
     const module_pages_edit_buttons = module.querySelectorAll('li.wiki_page a.edit_item_link');
 
     number_of_items_to_update = module_pages_edit_buttons.length;
-    string_addition = will_append ? `${divider}${string_addition}` : `${string_addition}${divider}`;
+    string_addition = will_add_prefix ? `${string_addition}${divider}` : `${divider}${string_addition}`;
 
     for (const edit_button of module_pages_edit_buttons) {
         edit_button.click();
@@ -130,11 +138,11 @@ async function execute() {
 
         let already_has_prefix_or_suffix = current_page_name.toLowerCase().includes(string_addition.toLowerCase());
 
-        if (will_prepend) {
+        if (will_add_prefix) {
             updated_page_name = `${already_has_prefix_or_suffix ? '' : string_addition}${current_page_name}`;
-        } else if (will_append) {
+        } else if (will_add_suffix) {
             updated_page_name = `${current_page_name}${already_has_prefix_or_suffix ? '' : string_addition}`;
-        } else if (will_remove_prefix || will_remove_suffix) {
+        } else if (will_remove_prefix || will_remove_suffix || will_replace) {
             updated_page_name = current_page_name.replaceAll(rename_from, rename_to);
         }
 
