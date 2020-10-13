@@ -65,7 +65,7 @@ async function execute() {
     } else {
 
         do {
-            let rename_type = window.prompt("How would you like to rename the pages in this module? (p: prepend, a: append, rp: remove prefix, rs: remove suffix, r: replace, c: cancel)");
+            let rename_type = window.prompt("How would you like to rename the pages in this module? (ap: add prefix, as: add suffix, rp: remove prefix, rs: remove suffix, r: replace, c: cancel)");
             // Reset error
             task_selection_error = false;
 
