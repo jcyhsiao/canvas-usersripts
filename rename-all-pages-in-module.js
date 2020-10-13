@@ -113,6 +113,11 @@ async function execute() {
             rename_from = window.prompt('Input the OLD string you would like to replace (case-sensitive): ');
             rename_to = window.prompt('Input the NEW string you would like to replace the OLD string with: ');
         }
+
+        if (string_addition === null || divider === null || rename_from === null || rename_to === null) {
+            alert("Task cancelled");
+            return;
+        }
     }
 
     // Getting the module number from the button
