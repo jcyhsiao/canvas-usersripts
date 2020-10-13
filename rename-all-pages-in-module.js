@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rename all pages in module
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
-// @version      2020.10.13-1
+// @version      2020.10.13-2
 // @description  One button to rename all pages in a given module
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/modules
@@ -9,7 +9,8 @@
 // @grant        none
 // ==/UserScript==
 
-const debug_mode = true;
+// none, append, prepend, remove-prefix, remove-suffix, replace
+const debug_mode = 'remove-suffix';
 
 // Triggered by clicking button
 async function execute() {
@@ -19,20 +20,40 @@ async function execute() {
     let will_remove_suffix = false;
     let will_replace = false;
 
-    let string_addition = null;
-    let divider = null;
-    let renameFrom = null;
-    let renameTo = null;
+    let string_addition = '';
+    let divider = '';
+    let rename_from = '';
+    let rename_to = '';
+
+    let number_of_items_to_update = 0;
+    let number_of_items_updated = 0;
 
     let task_selection_error = false;
     let underscore_input_error = false;
 
-    if (debug_mode) {
-
-        will_prepend = true;
-        string_addition = 'TEST';
-        divider = '';
-
+    if (debug_mode.toLowerCase() !== 'none') {
+        switch (debug_mode) {
+            case 'prepend':
+                will_prepend = true;
+                string_addition = 'zOLD';
+                divider = '_';
+                break;
+            case 'append':
+                will_append = true;
+                string_addition = 'zOLD';
+                divider = '_';
+                break;
+            case 'remove-prefix':
+                will_remove_prefix = true;
+                rename_from = 'zOLD_';
+                break;
+            case 'remove-suffix':
+                will_remove_suffix = true;
+                rename_from = '_zOLD';
+                break;
+            default:
+                // Do nothing
+        }
     } else {
 
         do {
@@ -40,7 +61,7 @@ async function execute() {
             // Reset error
             task_selection_error = false;
 
-            switch (rename_type) {
+            switch (rename_type.toLowerCase()) {
                 case 'p':
                     will_prepend = true;
                     break;
@@ -79,9 +100,7 @@ async function execute() {
         } else if (will_remove_prefix || will_remove_suffix) {
 
             let task_type = will_remove_prefix ? 'prefix' : 'suffix';
-            divider = window.prompt(`Input the divider that separates your ${task_type} from the page name (leave blank if none): `);
-            // TODO
-            alert("This is not yet implemented");
+            rename_from = window.prompt(`Input the ${task_type}, including any divider; case has to match: `);
 
         } else if (will_replace) {
             // TODO
@@ -100,27 +119,43 @@ async function execute() {
     // Select all module items
     const module_pages_edit_buttons = module.querySelectorAll('li.wiki_page a.edit_item_link');
 
+    number_of_items_to_update = module_pages_edit_buttons.length;
+    string_addition = will_append ? `${divider}${string_addition}` : `${string_addition}${divider}`;
+
     for (const edit_button of module_pages_edit_buttons) {
         edit_button.click();
         let title_input = document.querySelector('#content_tag_title');
         let dialog_submit_button = document.querySelector('#edit_item_form').parentElement.querySelector('.button_type_submit');
+        let dialog_close_button = document.querySelector('#edit_item_form').parentElement.querySelector('.ui-dialog-titlebar-close');
         let current_page_name = title_input.value;
         let updated_page_name;
+        // TO DO: skip saving if not updated
+        let need_to_save = true;
 
-        divider = (divider === null ? '' : divider);
+        let already_has_prefix_or_suffix = current_page_name.toLowerCase().includes(string_addition.toLowerCase());
 
         if (will_prepend) {
-            updated_page_name = `${string_addition}${divider}${current_page_name}`;
+            updated_page_name = `${already_has_prefix_or_suffix ? '' : string_addition}${current_page_name}`;
         } else if (will_append) {
-            updated_page_name = `${current_page_name}${divider}${string_addition}`;
+            updated_page_name = `${current_page_name}${already_has_prefix_or_suffix ? '' : string_addition}`;
+        } else if (will_remove_prefix || will_remove_suffix) {
+            updated_page_name = current_page_name.replaceAll(rename_from, rename_to);
         }
 
-        title_input.value = updated_page_name;
-        dialog_submit_button.click();
+        need_to_save = current_page_name !== updated_page_name;
+
+        if (!need_to_save) {
+            dialog_close_button.click() ;
+        }
+        else {
+            number_of_items_updated += 1;
+            title_input.value = updated_page_name;
+            dialog_submit_button.click();
+        }
         await new Promise(resolve => setTimeout(resolve, 1000)); // 1 sec
     }
 
-    alert("Task completed!");
+    alert(`${number_of_items_updated} of ${number_of_items_to_update} items needed to be and were updated!`);
 }
 
 // Create "unpublish all items" button for all modules
