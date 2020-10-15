@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rename all pages in module
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
-// @version      2020.10.13-3
+// @version      2020.10.15-1
 // @description  One button to rename all pages in a given module
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/modules
@@ -10,7 +10,6 @@
 // ==/UserScript==
 
 // TODO: document
-// TODO: test interaction
 
 // none, add-prefix, add-suffix, remove-prefix, remove-suffix, replace
 const debug_mode = 'none';
@@ -34,6 +33,7 @@ async function execute() {
     let task_selection_error = false;
     let underscore_input_error = false;
 
+    // For more savvy users and for debug purposes
     if (debug_mode.toLowerCase() !== 'none') {
         switch (debug_mode) {
             case 'add-prefix':
@@ -64,8 +64,9 @@ async function execute() {
         }
     } else {
 
+        // First, ask for type of rename user wants to do; continue asking until user explicitly cancels
         do {
-            let rename_type = window.prompt("How would you like to rename the pages in this module? (ap: add prefix, as: add suffix, rp: remove prefix, rs: remove suffix, r: replace, c: cancel)");
+            let rename_type = window.prompt('How would you like to rename the pages in this module? (ap: add prefix, as: add suffix, rp: remove prefix, rs: remove suffix, r: replace). \n\nHit "Cancel" or the esc key at any point to cancel');
             // Reset error
             task_selection_error = false;
 
@@ -85,10 +86,6 @@ async function execute() {
                 case 'r':
                     will_replace = true;
                     break;
-                case 'c':
-                    alert('Task cancelled');
-                    // Stop
-                    return;
                 default:
                     alert('Invalid task.');
                     task_selection_error = true;
@@ -96,24 +93,24 @@ async function execute() {
         } while (task_selection_error === true);
 
 
+        // Then, prepare depending on type of rename user has chosen
         if (will_add_prefix || will_add_suffix) {
-
             let addition_type = will_add_prefix ? 'prefix' : 'suffix';
 
             string_addition = window.prompt(`What is the string you would like to add as ${addition_type}?`);
 
-            divider = window.prompt('Provide a divider to separate your addition with the original page name (leave blank if none): ');
-
+            // Note that divider is set to be an empty string by default already
+            // We can technically ask for this in the previous prompt, but people might be more likely to think about it it's a separate prompt
+            divider = window.prompt('Provide a divider to separate your addition with the original page name (leave blank and select "OK" if none): ');
         } else if (will_remove_prefix || will_remove_suffix) {
-
+            // Here, we're not explicitly asking for a divider
             let task_type = will_remove_prefix ? 'prefix' : 'suffix';
-            rename_from = window.prompt(`Input the ${task_type}, including any divider; case has to match: `);
-
+            rename_from = window.prompt(`Input the ${task_type} (case-sensitive): `);
         } else if (will_replace) {
             rename_from = window.prompt('Input the OLD string you would like to replace (case-sensitive): ');
             rename_to = window.prompt('Input the NEW string you would like to replace the OLD string with: ');
         }
-
+        // Selecting "Cancel" or hitting the esc key on a prompt returns null
         if (string_addition === null || divider === null || rename_from === null || rename_to === null) {
             alert("Task cancelled");
             return;
@@ -125,24 +122,39 @@ async function execute() {
     // Select the module that the button is for
     const module_id = `context_module_${module_id_number}`;
     const module = document.querySelector(`#${module_id}`);
-    // Select all module items
+    // Select the edit button (tucked under the "3-dot" options menu) of all module items that are wiki pages
     const module_pages_edit_buttons = module.querySelectorAll('li.wiki_page a.edit_item_link');
 
+    // This part is for reviewing tasks results
     number_of_items_to_update = module_pages_edit_buttons.length;
-    string_addition = will_add_prefix ? `${string_addition}${divider}` : `${divider}${string_addition}`;
 
+    // If we task is adding prefix or suffic, preparing the string addition
+    if (will_add_prefix || will_add_suffix) {
+        string_addition = will_add_prefix ? `${string_addition}${divider}` : `${divider}${string_addition}`;
+    }
+
+    // Then, perform task on each item
     for (const edit_button of module_pages_edit_buttons) {
+        // Click edit button, which reveals edit menu
         edit_button.click();
+
+        // Get the text input
         let title_input = document.querySelector('#content_tag_title');
+
+        // Get the close and submit buttons
         let dialog_submit_button = document.querySelector('#edit_item_form').parentElement.querySelector('.button_type_submit');
         let dialog_close_button = document.querySelector('#edit_item_form').parentElement.querySelector('.ui-dialog-titlebar-close');
-        let current_page_name = title_input.value;
-        let updated_page_name;
-        // TO DO: skip saving if not updated
-        let need_to_save = true;
 
+        // Get current page name from the text input, and prepare the updated page name
+        let current_page_name = title_input.value;
+        // Since this is null, if there is an error, Canvas will convert this to "undefined"
+        let updated_page_name;
+
+        // We'll then decide whether or not we need to save, or can simply exit out of the dialog; we're defaulting to needing to save just in case
+        let need_to_save = true;
         let already_has_prefix_or_suffix = current_page_name.toLowerCase().includes(string_addition.toLowerCase());
 
+        // TODO: We might be able to refactor this, but it works well so there may not actually be a need
         if (will_add_prefix) {
             updated_page_name = `${already_has_prefix_or_suffix ? '' : string_addition}${current_page_name}`;
         } else if (will_add_suffix) {
@@ -151,16 +163,20 @@ async function execute() {
             updated_page_name = current_page_name.replaceAll(rename_from, rename_to);
         }
 
+        // If the name didn't change, then we don't need to save
         need_to_save = current_page_name !== updated_page_name;
 
         if (!need_to_save) {
             dialog_close_button.click() ;
         }
         else {
+            // This is for the task confirmation at the end
             number_of_items_updated += 1;
+
             title_input.value = updated_page_name;
             dialog_submit_button.click();
         }
+        // Waiting 1 sec just in case
         await new Promise(resolve => setTimeout(resolve, 1000)); // 1 sec
     }
 
