@@ -1,16 +1,13 @@
 // ==UserScript==
 // @name         Select all pages
 // @namespace    https://github.com/jcyhsiao/canvas-usersripts
-// @version      2020.10.09-1
+// @version      2020.10.23-1
 // @description  One button to select all pages on the Pages index page
 // @author       Chih-Yu (Jay) Hsiao
 // @include      https://*.*instructure.com/courses/*/pages
 // @run-at       document-idle
 // @grant        none
 // ==/UserScript==
-
-// NOTE: Before you trigger the script, first scroll down the page a couple of times to make sure all pages are loaded.
-// TODO: Account for additional pages that are only loaded upon infinite scrolling.
 
 /* User Configuration */
 const trigger_delete = false; // Whether or not to automatically trigger delete. DEFAULT: false
@@ -24,6 +21,11 @@ function execute() {
         select_all_pages();
     }, 3500);
 
+    // Then, "click" the delete button if trigger_delete is true.
+    if (trigger_delete === true) {
+        const delete_button = document.querySelector('button.delete_pages');
+        delete_button.click();
+    }
 }
 
 // Keep scrolling until no more results can be loaded
@@ -58,12 +60,6 @@ function select_all_pages() {
                 checkbox.click();
             }
         }
-    }
-
-    // Then, "click" the delete button if trigger_delete is true.
-    if (trigger_delete === true) {
-        const delete_button = document.querySelector('button.delete_pages');
-        delete_button.click();
     }
 }
 
